@@ -6,41 +6,49 @@
 //
 
 import UIKit
+import Kingfisher
 
 class EventDetailsController: UIViewController {
+    
+    var details: Event? {
+        didSet {
+            guard let details = details else { return }
+            let imageUrl = URL(string: details.performers.first!.image)
+            eventImageView.kf.setImage(with: imageUrl)
+            self.title = details.short_title
+            let splitDateAndTime = details.datetime_utc.components(separatedBy: "T")
+            self.dateAndTimeLabel.text = "\(AppService.formatDate(date: splitDateAndTime.first!)) \(AppService.formatTime(time: splitDateAndTime.last!))"
+            self.locationLabel.text = "\(details.venue.city), \(details.venue.state)"
+        }
+    }
     
     let eventImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 10
         imageView.contentMode = .scaleAspectFill
-        imageView.backgroundColor = .black
+        imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
     let dateAndTimeLabel: UILabel = {
         let label = UILabel()
-        label.text = "somedate"
+        label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     let locationLabel: UILabel = {
         let label = UILabel()
-        label.text = "someplace"
+        label.textColor = .lightGray
+        label.font = UIFont.systemFont(ofSize: 15, weight: .light)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupNavBar()
         setupViews()
-    }
-    
-    private func setupNavBar() {
-        navigationController?.navigationBar.backgroundColor = .white
-        navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     private func setupViews() {
@@ -68,3 +76,7 @@ class EventDetailsController: UIViewController {
     }
 
 }
+
+
+
+

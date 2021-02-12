@@ -8,7 +8,7 @@
 import Foundation
 
 struct Event: Decodable {
-    let title: String
+    let short_title: String
     var performers: [Performers]
     let datetime_utc: String
     let venue: Venue

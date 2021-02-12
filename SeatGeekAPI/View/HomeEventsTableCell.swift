@@ -16,23 +16,22 @@ class HomeEventsTableCell: UITableViewCell {
     var details: Event? {
         didSet {
             guard let details = details else { return }
-//            guard let details = details, let eventImage = details.urlToImage else { return }
-//            let imageUrl = URL(string: eventImage)
-//            eventImageView.kf.setImage(with: imageUrl)
             let imageUrl = URL(string: details.performers.first!.image)
             eventImageView.kf.setImage(with: imageUrl)
-            self.titleLabel.text = details.title
+            self.titleLabel.text = details.short_title
             self.locationLabel.text = "\(details.venue.city), \(details.venue.state)"
-            self.dateLabel.text = details.datetime_utc
+            let splitDateAndTime = details.datetime_utc.components(separatedBy: "T")
+            self.dateLabel.text = AppService.formatDate(date: splitDateAndTime.first!)
+            self.timeLabel.text = AppService.formatTime(time: splitDateAndTime.last!)
         }
     }
     
     //MARK: Views
     private let eventImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = .black
         imageView.layer.cornerRadius = 10
         imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -47,8 +46,9 @@ class HomeEventsTableCell: UITableViewCell {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "title"
-        label.textColor = .black
+//        label.textColor = .black
+        label.font = UIFont.systemFont(ofSize: 20, weight: .heavy)
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -63,7 +63,8 @@ class HomeEventsTableCell: UITableViewCell {
     
     private let locationLabel: UILabel = {
         let label = UILabel()
-        label.text = "location"
+        label.textColor = .lightGray
+        label.font = UIFont.systemFont(ofSize: 15, weight: .light)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -77,14 +78,16 @@ class HomeEventsTableCell: UITableViewCell {
     
     private let dateLabel: UILabel = {
         let label = UILabel()
-        label.text = "date"
+        label.textColor = .lightGray
+        label.font = UIFont.systemFont(ofSize: 15, weight: .light)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private let timeLabel: UILabel = {
         let label = UILabel()
-        label.text = "time"
+        label.textColor = .lightGray
+        label.font = UIFont.systemFont(ofSize: 15, weight: .light)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -138,5 +141,4 @@ class HomeEventsTableCell: UITableViewCell {
             timeLabel.heightAnchor.constraint(equalTo: dateAndTimeStackView.heightAnchor, multiplier: 0.5)
         ])
     }
-    
 }

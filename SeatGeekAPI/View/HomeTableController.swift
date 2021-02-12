@@ -36,15 +36,28 @@ class HomeTableController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupNavBar()
         setupViews()
         getEvents()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        setupNavBar()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.navigationBar.backgroundColor = .white
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
+        
     }
     
     private func setupNavBar() {
         navigationController?.navigationBar.backgroundColor = UIColor(red: 48/255, green: 25/255, blue: 52/255, alpha: 1.0)
         navigationController?.navigationBar.barTintColor = UIColor(red: 48/255, green: 25/255, blue: 52/255, alpha: 1.0)
         navigationController?.navigationBar.barStyle = .black
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.searchController = searchController
     }
     
@@ -75,7 +88,12 @@ class HomeTableController: UIViewController {
 //MARK: Extensions
 
 extension HomeTableController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let event = events[indexPath.row]
+        let vc = EventDetailsController()
+        vc.details = event
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 extension HomeTableController: UITableViewDataSource {
@@ -90,4 +108,3 @@ extension HomeTableController: UITableViewDataSource {
         return cell
     }
 }
-
