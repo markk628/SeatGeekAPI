@@ -11,6 +11,7 @@ An app that pulls data from SeatGeekAPI's event endpoint. With that data a table
 ![](static/details.gif)
 ### Favorite
 ![](static/favorite1.gif)
+* part 2 👇
 ![](static/favorite2.gif)
 
 ## Current Status
