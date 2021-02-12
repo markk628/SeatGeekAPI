@@ -8,7 +8,18 @@
 import UIKit
 import Kingfisher
 
-class EventDetailsController: UIViewController {
+enum Favorite: CaseIterable {
+    case yes
+    case no
+    
+    static var current: Favorite = .no
+}
+
+protocol FavoriteObserver: class {
+    func didFavorite(to favorite: Favorite)
+}
+
+class EventDetailsController: UIViewController, FavoriteObserver {
     
     var favoriteEvents: [String] = UserDefaults.standard.stringArray(forKey: "Favorites") ?? [String]()
             
@@ -93,17 +104,28 @@ class EventDetailsController: UIViewController {
         ])
     }
     
+    internal func didFavorite(to favorite: Favorite) {
+        if favorite == .yes {
+            favoriteButtonImage = UIImage(systemName: "heart.fill")!
+        } else if favorite == .no {
+            favoriteButtonImage = UIImage(systemName: "heart")!
+        }
+    }
+    
     @objc func favoriteButtonTapped() {
         let defaults = UserDefaults.standard
         if favoriteEvents.contains("\(details!.id)") {
-//            favoriteButtonImage = UIImage(systemName: "heart")!
+            
             defaults.set(favoriteEvents.filter { $0 != "\(details!.id)"}, forKey: "Favorites")
+            didFavorite(to: .no)
         } else {
-//            favoriteButtonImage = UIImage(systemName: "heart.fill")!
+            
             favoriteEvents.append("\(details!.id)")
             defaults.set(favoriteEvents, forKey: "Favorites")
+            didFavorite(to: .yes)
         }
         print("hello")
+        
     }
 
 }

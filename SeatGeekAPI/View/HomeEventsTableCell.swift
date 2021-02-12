@@ -13,6 +13,8 @@ class HomeEventsTableCell: UITableViewCell {
     //MARK: Properties
     static var identifier: String = "HomeEventsCell"
     
+    var favoriteEvents: [String] = UserDefaults.standard.stringArray(forKey: "Favorites") ?? [String]()
+    
     var details: Event? {
         didSet {
             guard let details = details else { return }
@@ -91,10 +93,21 @@ class HomeEventsTableCell: UITableViewCell {
         return label
     }()
     
+    lazy var favoriteButtonImageView: UIImageView = {
+        var imageView = UIImageView()
+        imageView.image = UIImage(systemName: "heart.fill")!
+        imageView.isHidden = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.clipsToBounds = true
         setupViews()
+        if favoriteEvents.contains("\(String(describing: details?.id))") {
+            favoriteButtonImageView.isHidden = false
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -105,6 +118,7 @@ class HomeEventsTableCell: UITableViewCell {
     private func setupViews() {
         selectionStyle = .gray
         self.addSubview(eventImageView)
+        self.addSubview(favoriteButtonImageView)
         self.addSubview(titleAndDescriptionStackView)
 
         [titleLabel, locationDateTimeStackView].forEach {
@@ -124,6 +138,11 @@ class HomeEventsTableCell: UITableViewCell {
             eventImageView.widthAnchor.constraint(equalTo: eventImageView.heightAnchor),
             eventImageView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 20),
             eventImageView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            
+            favoriteButtonImageView.heightAnchor.constraint(equalToConstant: 50),
+            favoriteButtonImageView.widthAnchor.constraint(equalTo: favoriteButtonImageView.heightAnchor),
+            favoriteButtonImageView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10),
+            favoriteButtonImageView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             
             titleAndDescriptionStackView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 20),
             titleAndDescriptionStackView.leadingAnchor.constraint(equalTo: self.eventImageView.trailingAnchor, constant: 20),

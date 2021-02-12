@@ -81,6 +81,7 @@ class HomeTableController: UIViewController {
             switch result {
             case let .success(pulledEvents):
                 self.events = pulledEvents
+                self.eventsTableView.reloadData()
             case let .failure(error):
                 print(error)
             }
@@ -136,6 +137,5 @@ extension HomeTableController: UISearchBarDelegate {
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         getEvents()
-        self.eventsTableView.reloadData()
     }
 }
