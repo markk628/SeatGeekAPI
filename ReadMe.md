@@ -9,8 +9,7 @@ An app that pulls data from SeatGeekAPI's event endpoint. With that data a table
 ![](static/searchbar.gif)
 ### Event Details Controller
 ![](static/details.gif)
-### Favorite
-* part 2 👇 under first gif
+### Favorite part 2 👇 under first gif
 ![](static/favorite1.gif)
 ![](static/favorite2.gif)
 
