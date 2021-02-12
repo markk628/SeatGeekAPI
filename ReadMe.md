@@ -14,8 +14,7 @@ An app that pulls data from SeatGeekAPI's event endpoint. With that data a table
 ![](static/favorite2.gif)
 
 ## Current Status
-* Still working on logic issue for favorites. The heart does not appear in the home controller and when tapped in the details controller it does not change unless the user goes back to home
-* Optimizing and refactoring
+* Still working on logic issue for favorites. The heart does not appear in the home controller unless app is relaunched. When tapped in the details controller it does not change unless the user goes back to home
 
 ## Tools
 * [Kingfisher](https://github.com/onevcat/Kingfisher)
