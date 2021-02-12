@@ -46,7 +46,6 @@ class HomeEventsTableCell: UITableViewCell {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-//        label.textColor = .black
         label.font = UIFont.systemFont(ofSize: 20, weight: .heavy)
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false

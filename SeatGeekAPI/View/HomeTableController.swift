@@ -17,9 +17,12 @@ class HomeTableController: UIViewController {
         }
     }
     
-    let searchController: UISearchController = {
+    var filteredEvents: [Event]!
+    
+    lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchBar.placeholder = "Search events"
+        searchController.searchBar.delegate = self
         return searchController
     }()
     
@@ -43,6 +46,7 @@ class HomeTableController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         setupNavBar()
+        getEvents()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -50,7 +54,6 @@ class HomeTableController: UIViewController {
         navigationController?.navigationBar.backgroundColor = .white
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
-        
     }
     
     private func setupNavBar() {
@@ -87,11 +90,13 @@ class HomeTableController: UIViewController {
 
 //MARK: Extensions
 
+//MARK: UITableView
 extension HomeTableController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let event = events[indexPath.row]
         let vc = EventDetailsController()
         vc.details = event
+        
         navigationController?.pushViewController(vc, animated: true)
     }
 }
@@ -106,5 +111,31 @@ extension HomeTableController: UITableViewDataSource {
         let event = events[indexPath.row]
         cell.details = event
         return cell
+    }
+}
+
+//MARK: UISearchBar
+extension HomeTableController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        filteredEvents = []
+        
+        if searchText.isEmpty {
+            filteredEvents = events
+        } else {
+            for event in events {
+                if event.short_title.lowercased().contains(searchText.lowercased()) ||
+                    event.venue.city.lowercased().contains(searchText.lowercased()) ||
+                    event.venue.state.lowercased().contains(searchText.lowercased()) {
+                    filteredEvents.append(event)
+                }
+            }
+            events = filteredEvents
+        }
+        self.eventsTableView.reloadData()
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        getEvents()
+        self.eventsTableView.reloadData()
     }
 }

@@ -10,6 +10,8 @@ import Kingfisher
 
 class EventDetailsController: UIViewController {
     
+    var favoriteEvents: [String] = UserDefaults.standard.stringArray(forKey: "Favorites") ?? [String]()
+            
     var details: Event? {
         didSet {
             guard let details = details else { return }
@@ -45,10 +47,26 @@ class EventDetailsController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
+    lazy var favoriteButtonImage: UIImage = {
+        var image = UIImage()
+        if favoriteEvents.contains("\(details!.id)") {
+            image = UIImage(systemName: "heart.fill")!
+        } else {
+            image = UIImage(systemName: "heart")!
+        }
+        return image
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: favoriteButtonImage, style: .plain, target: self, action: #selector(favoriteButtonTapped))
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: favoriteButtonImage, style: .plain, target: self, action: #selector(favoriteButtonTapped))
     }
     
     private func setupViews() {
@@ -73,6 +91,19 @@ class EventDetailsController: UIViewController {
             locationLabel.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             locationLabel.heightAnchor.constraint(equalToConstant: 20),
         ])
+    }
+    
+    @objc func favoriteButtonTapped() {
+        let defaults = UserDefaults.standard
+        if favoriteEvents.contains("\(details!.id)") {
+//            favoriteButtonImage = UIImage(systemName: "heart")!
+            defaults.set(favoriteEvents.filter { $0 != "\(details!.id)"}, forKey: "Favorites")
+        } else {
+//            favoriteButtonImage = UIImage(systemName: "heart.fill")!
+            favoriteEvents.append("\(details!.id)")
+            defaults.set(favoriteEvents, forKey: "Favorites")
+        }
+        print("hello")
     }
 
 }

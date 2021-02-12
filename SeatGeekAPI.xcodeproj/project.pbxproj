@@ -19,7 +19,6 @@
 		FEDD28EB25D6161B002A54EC /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDD28EA25D6161B002A54EC /* NetworkManager.swift */; };
 		FEDD28EE25D616EF002A54EC /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDD28ED25D616EF002A54EC /* NetworkError.swift */; };
 		FEDD28F125D6170A002A54EC /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDD28F025D6170A002A54EC /* Response.swift */; };
-		FEDD28F425D61770002A54EC /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDD28F325D61770002A54EC /* Request.swift */; };
 		FEDD28F825D61E69002A54EC /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = FEDD28F725D61E69002A54EC /* Kingfisher */; };
 /* End PBXBuildFile section */
 
@@ -38,7 +37,6 @@
 		FEDD28EA25D6161B002A54EC /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		FEDD28ED25D616EF002A54EC /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		FEDD28F025D6170A002A54EC /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
-		FEDD28F325D61770002A54EC /* Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,7 +115,6 @@
 				FEDD28EA25D6161B002A54EC /* NetworkManager.swift */,
 				FEDD28ED25D616EF002A54EC /* NetworkError.swift */,
 				FEDD28F025D6170A002A54EC /* Response.swift */,
-				FEDD28F325D61770002A54EC /* Request.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -201,7 +198,6 @@
 				FEDD28E425D610E2002A54EC /* EventDetailsController.swift in Sources */,
 				FEDD28D625D5F1F3002A54EC /* AppService.swift in Sources */,
 				FEDD28BC25D5EEEE002A54EC /* AppDelegate.swift in Sources */,
-				FEDD28F425D61770002A54EC /* Request.swift in Sources */,
 				FEDD28F125D6170A002A54EC /* Response.swift in Sources */,
 				FEDD28EB25D6161B002A54EC /* NetworkManager.swift in Sources */,
 				FEDD28E125D60476002A54EC /* HomeEventsTableCell.swift in Sources */,

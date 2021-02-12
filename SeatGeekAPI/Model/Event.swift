@@ -9,9 +9,10 @@ import Foundation
 
 struct Event: Decodable {
     let short_title: String
-    var performers: [Performers]
+    let performers: [Performers]
     let datetime_utc: String
     let venue: Venue
+    let id: Int
 }
 
 struct Venue: Decodable {
