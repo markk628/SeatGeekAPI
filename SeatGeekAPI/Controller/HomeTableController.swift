@@ -9,24 +9,30 @@ import UIKit
 
 class HomeTableController: UIViewController {
     
-    let networkManager = NetworkManager()
+    //MARK: Properties
+    private let networkManager = NetworkManager()
     
-    var events: [Event] = [] {
+    private var favoriteEvents: [String] = UserDefaults.standard.stringArray(forKey: "Favorites") ?? [String]()
+    
+    // table view must reload if it events are changed
+    private var events: [Event] = [] {
         didSet {
             self.eventsTableView.reloadData()
         }
     }
     
-    var filteredEvents: [Event]!
+    // for searchbar filtered events
+    private var filteredEvents: [Event]!
     
-    lazy var searchController: UISearchController = {
+    //MARK: Views
+    private lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchBar.placeholder = "Search events"
         searchController.searchBar.delegate = self
         return searchController
     }()
     
-    lazy var eventsTableView: UITableView = {
+    private lazy var eventsTableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.rowHeight = 150
@@ -37,6 +43,7 @@ class HomeTableController: UIViewController {
         return tableView
     }()
     
+    //MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
@@ -51,17 +58,25 @@ class HomeTableController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        navigationController?.navigationBar.backgroundColor = .white
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
+        setupDetailControllerNavBar()
     }
     
+    //MARK: Methods
+    
+    //MARK: front end related
     private func setupNavBar() {
         navigationController?.navigationBar.backgroundColor = UIColor(red: 48/255, green: 25/255, blue: 52/255, alpha: 1.0)
         navigationController?.navigationBar.barTintColor = UIColor(red: 48/255, green: 25/255, blue: 52/255, alpha: 1.0)
         navigationController?.navigationBar.barStyle = .black
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.searchController = searchController
+    }
+    
+    // Navigation bar for EventDetailsController
+    private func setupDetailControllerNavBar() {
+        navigationController?.navigationBar.backgroundColor = .white
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
     }
     
     private func setupViews() {
@@ -76,6 +91,7 @@ class HomeTableController: UIViewController {
         ])
     }
     
+    //MARK: Back end related
     private func getEvents() {
         networkManager.getEvents() { result in
             switch result {
@@ -111,12 +127,17 @@ extension HomeTableController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: HomeEventsTableCell.identifier, for: indexPath) as! HomeEventsTableCell
         let event = events[indexPath.row]
         cell.details = event
+        if !favoriteEvents.contains("\(event.id)") {
+            cell.favoriteButtonImageView.isHidden = true
+        }
         return cell
     }
 }
 
 //MARK: UISearchBar
 extension HomeTableController: UISearchBarDelegate {
+    
+    // Method that repopulates cells in the table view based on what the search text is
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         filteredEvents = []
         
@@ -134,7 +155,7 @@ extension HomeTableController: UISearchBarDelegate {
         }
         self.eventsTableView.reloadData()
     }
-    
+
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         getEvents()
     }

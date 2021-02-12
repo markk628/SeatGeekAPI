@@ -8,6 +8,7 @@
 import UIKit
 
 struct AppService {
+        
     //MARK: Converting Dates
     static func dateToString(date: String) -> Date {
         let dateFormatter = DateFormatter()

@@ -8,19 +8,16 @@
 import Foundation
 
 struct Request {
-//    let headers = [
-//        "Accept": "application/json",
-//        "Content-Type": "application/json",
-//    ]
     let baseURL: String = "https://api.seatgeek.com/2/events"
     let clientId: String = "MjE1NDEwMzl8MTYxMzA5NDI4Ny40MjU4MDA2"
     
+    // makes a request to SeatGeekAPI using the baseURL and clientId put together and returns the request
+    // to the NetworkManager
     func makeRequest() -> URLRequest {
         let fullURL = URL(string: baseURL.appending("?client_id=\(clientId)"))!
         
         var request = URLRequest(url: fullURL)
         request.httpMethod = "GET"
-//        request.allHTTPHeaderFields = headers
         
         return request
     }
@@ -30,6 +27,7 @@ class NetworkManager {
     
     let urlSession = URLSession.shared
     
+    // Extracting data from the request and turning it into usable data
     func getEvents(completion: @escaping (Result<[Event]>) -> ()) {
         let request = Request().makeRequest()
         urlSession.dataTask(with: request) { (data, response, error) in

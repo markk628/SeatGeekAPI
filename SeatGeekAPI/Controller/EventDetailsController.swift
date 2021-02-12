@@ -11,8 +11,6 @@ import Kingfisher
 enum Favorite: CaseIterable {
     case yes
     case no
-    
-    static var current: Favorite = .no
 }
 
 protocol FavoriteObserver: class {
@@ -21,21 +19,27 @@ protocol FavoriteObserver: class {
 
 class EventDetailsController: UIViewController, FavoriteObserver {
     
-    var favoriteEvents: [String] = UserDefaults.standard.stringArray(forKey: "Favorites") ?? [String]()
+    //MARK: Properties
+    private var favoriteEvents: [String] = UserDefaults.standard.stringArray(forKey: "Favorites") ?? [String]()
             
     var details: Event? {
         didSet {
-            guard let details = details else { return }
-            let imageUrl = URL(string: details.performers.first!.image)
-            eventImageView.kf.setImage(with: imageUrl)
-            self.title = details.short_title
-            let splitDateAndTime = details.datetime_utc.components(separatedBy: "T")
-            self.dateAndTimeLabel.text = "\(AppService.formatDate(date: splitDateAndTime.first!)) \(AppService.formatTime(time: splitDateAndTime.last!))"
-            self.locationLabel.text = "\(details.venue.city), \(details.venue.state)"
+            DispatchQueue.global(qos: .userInteractive).async {
+                guard let details = self.details else { return }
+                let imageUrl = URL(string: details.performers.first!.image)
+                DispatchQueue.main.async {
+                    self.eventImageView.kf.setImage(with: imageUrl)
+                    self.title = details.short_title
+                    let splitDateAndTime = details.datetime_utc.components(separatedBy: "T")
+                    self.dateAndTimeLabel.text = "\(AppService.formatDate(date: splitDateAndTime.first!)) \(AppService.formatTime(time: splitDateAndTime.last!))"
+                    self.locationLabel.text = "\(details.venue.city), \(details.venue.state)"
+                }
+            }
         }
     }
     
-    let eventImageView: UIImageView = {
+    //MARK: Views
+    private let eventImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 10
         imageView.contentMode = .scaleAspectFill
@@ -44,14 +48,14 @@ class EventDetailsController: UIViewController, FavoriteObserver {
         return imageView
     }()
     
-    let dateAndTimeLabel: UILabel = {
+    private let dateAndTimeLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    let locationLabel: UILabel = {
+    private let locationLabel: UILabel = {
         let label = UILabel()
         label.textColor = .lightGray
         label.font = UIFont.systemFont(ofSize: 15, weight: .light)
@@ -59,7 +63,7 @@ class EventDetailsController: UIViewController, FavoriteObserver {
         return label
     }()
     
-    lazy var favoriteButtonImage: UIImage = {
+    private lazy var favoriteButtonImage: UIImage = {
         var image = UIImage()
         if favoriteEvents.contains("\(details!.id)") {
             image = UIImage(systemName: "heart.fill")!
@@ -68,7 +72,8 @@ class EventDetailsController: UIViewController, FavoriteObserver {
         }
         return image
     }()
-
+    
+    //MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
@@ -80,6 +85,9 @@ class EventDetailsController: UIViewController, FavoriteObserver {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: favoriteButtonImage, style: .plain, target: self, action: #selector(favoriteButtonTapped))
     }
     
+    //MARK: Methods
+    
+    //MARK: Front end related
     private func setupViews() {
         self.view.backgroundColor = .white
         self.view.addSubview(eventImageView)
@@ -104,6 +112,7 @@ class EventDetailsController: UIViewController, FavoriteObserver {
         ])
     }
     
+    //MARK: Back end related
     internal func didFavorite(to favorite: Favorite) {
         if favorite == .yes {
             favoriteButtonImage = UIImage(systemName: "heart.fill")!
@@ -115,17 +124,17 @@ class EventDetailsController: UIViewController, FavoriteObserver {
     @objc func favoriteButtonTapped() {
         let defaults = UserDefaults.standard
         if favoriteEvents.contains("\(details!.id)") {
-            
-            defaults.set(favoriteEvents.filter { $0 != "\(details!.id)"}, forKey: "Favorites")
+            let newFavoriteEvents = favoriteEvents.filter { $0 != "\(details!.id)"}
+            defaults.set(newFavoriteEvents, forKey: "Favorites")
             didFavorite(to: .no)
+            print("removed from favorites")
         } else {
             
             favoriteEvents.append("\(details!.id)")
             defaults.set(favoriteEvents, forKey: "Favorites")
             didFavorite(to: .yes)
+            print("added to favorites")
         }
-        print("hello")
-        
     }
 
 }

@@ -17,14 +17,18 @@ class HomeEventsTableCell: UITableViewCell {
     
     var details: Event? {
         didSet {
-            guard let details = details else { return }
-            let imageUrl = URL(string: details.performers.first!.image)
-            eventImageView.kf.setImage(with: imageUrl)
-            self.titleLabel.text = details.short_title
-            self.locationLabel.text = "\(details.venue.city), \(details.venue.state)"
-            let splitDateAndTime = details.datetime_utc.components(separatedBy: "T")
-            self.dateLabel.text = AppService.formatDate(date: splitDateAndTime.first!)
-            self.timeLabel.text = AppService.formatTime(time: splitDateAndTime.last!)
+            DispatchQueue.global(qos: .userInteractive).async {
+                guard let details = self.details else { return }
+                let imageUrl = URL(string: details.performers.first!.image)
+                DispatchQueue.main.async {
+                    self.eventImageView.kf.setImage(with: imageUrl)
+                    self.titleLabel.text = details.short_title
+                    self.locationLabel.text = "\(details.venue.city), \(details.venue.state)"
+                    let splitDateAndTime = details.datetime_utc.components(separatedBy: "T")
+                    self.dateLabel.text = AppService.formatDate(date: splitDateAndTime.first!)
+                    self.timeLabel.text = AppService.formatTime(time: splitDateAndTime.last!)
+                }
+            }
         }
     }
     
@@ -96,7 +100,6 @@ class HomeEventsTableCell: UITableViewCell {
     lazy var favoriteButtonImageView: UIImageView = {
         var imageView = UIImageView()
         imageView.image = UIImage(systemName: "heart.fill")!
-        imageView.isHidden = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -105,16 +108,13 @@ class HomeEventsTableCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.clipsToBounds = true
         setupViews()
-        if favoriteEvents.contains("\(String(describing: details?.id))") {
-            favoriteButtonImageView.isHidden = false
-        }
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    //MARK: Setting up the views
+    //MARK: Methods
     private func setupViews() {
         selectionStyle = .gray
         self.addSubview(eventImageView)

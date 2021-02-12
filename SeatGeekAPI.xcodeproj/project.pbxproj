@@ -73,13 +73,12 @@
 				FEDD28E925D6142A002A54EC /* Network */,
 				FEDD28DC25D603A8002A54EC /* Model */,
 				FEDD28DD25D603AF002A54EC /* View */,
-				FEDD28DE25D603B4002A54EC /* ViewModel */,
+				FEDD28DE25D603B4002A54EC /* Controller */,
 				FEDD28BB25D5EEEE002A54EC /* AppDelegate.swift */,
 				FEDD28BD25D5EEEE002A54EC /* SceneDelegate.swift */,
 				FEDD28C425D5EEF2002A54EC /* Assets.xcassets */,
 				FEDD28C625D5EEF2002A54EC /* LaunchScreen.storyboard */,
 				FEDD28C925D5EEF2002A54EC /* Info.plist */,
-				FEDD28D525D5F1F3002A54EC /* AppService.swift */,
 			);
 			path = SeatGeekAPI;
 			sourceTree = "<group>";
@@ -88,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				FEDD28E625D613B2002A54EC /* Event.swift */,
+				FEDD28D525D5F1F3002A54EC /* AppService.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -95,18 +95,18 @@
 		FEDD28DD25D603AF002A54EC /* View */ = {
 			isa = PBXGroup;
 			children = (
-				FEDD28BF25D5EEEE002A54EC /* HomeTableController.swift */,
 				FEDD28E025D60476002A54EC /* HomeEventsTableCell.swift */,
-				FEDD28E325D610E2002A54EC /* EventDetailsController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
 		};
-		FEDD28DE25D603B4002A54EC /* ViewModel */ = {
+		FEDD28DE25D603B4002A54EC /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				FEDD28BF25D5EEEE002A54EC /* HomeTableController.swift */,
+				FEDD28E325D610E2002A54EC /* EventDetailsController.swift */,
 			);
-			path = ViewModel;
+			path = Controller;
 			sourceTree = "<group>";
 		};
 		FEDD28E925D6142A002A54EC /* Network */ = {
