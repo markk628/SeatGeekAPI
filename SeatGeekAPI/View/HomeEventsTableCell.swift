@@ -17,18 +17,14 @@ class HomeEventsTableCell: UITableViewCell {
     
     var details: Event? {
         didSet {
-            DispatchQueue.global(qos: .userInteractive).async {
                 guard let details = self.details else { return }
                 let imageUrl = URL(string: details.performers.first!.image)
-                DispatchQueue.main.async {
-                    self.eventImageView.kf.setImage(with: imageUrl)
-                    self.titleLabel.text = details.short_title
-                    self.locationLabel.text = "\(details.venue.city), \(details.venue.state)"
-                    let splitDateAndTime = details.datetime_utc.components(separatedBy: "T")
-                    self.dateLabel.text = AppService.formatDate(date: splitDateAndTime.first!)
-                    self.timeLabel.text = AppService.formatTime(time: splitDateAndTime.last!)
-                }
-            }
+                eventImageView.kf.setImage(with: imageUrl)
+                titleLabel.text = details.short_title
+                locationLabel.text = "\(details.venue.city), \(details.venue.state)"
+                let splitDateAndTime = details.datetime_utc.components(separatedBy: "T")
+                dateLabel.text = AppService.formatDate(date: splitDateAndTime.first!)
+                timeLabel.text = AppService.formatTime(time: splitDateAndTime.last!)
         }
     }
     
@@ -100,6 +96,7 @@ class HomeEventsTableCell: UITableViewCell {
     lazy var favoriteButtonImageView: UIImageView = {
         var imageView = UIImageView()
         imageView.image = UIImage(systemName: "heart.fill")!
+        imageView.isHidden = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()

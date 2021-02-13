@@ -43,6 +43,12 @@ class HomeTableController: UIViewController {
         return tableView
     }()
     
+    private lazy var refreshControl: UIRefreshControl = {
+        let refresh = UIRefreshControl()
+        refresh.addTarget(self, action: #selector(refreshEventsTable), for: .valueChanged)
+        return refresh
+    }()
+    
     //MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,6 +89,12 @@ class HomeTableController: UIViewController {
         self.view.backgroundColor = UIColor(red: 48/255, green: 25/255, blue: 52/255, alpha: 1.0)
         self.view.addSubview(eventsTableView)
         
+        if #available(iOS 10.0, *) {
+            eventsTableView.refreshControl = refreshControl
+        } else {
+            eventsTableView.addSubview(refreshControl)
+        }
+        
         NSLayoutConstraint.activate([
             eventsTableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
             eventsTableView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
@@ -97,11 +109,18 @@ class HomeTableController: UIViewController {
             switch result {
             case let .success(pulledEvents):
                 self.events = pulledEvents
-                self.eventsTableView.reloadData()
+                DispatchQueue.main.async {
+                    self.eventsTableView.reloadData()
+                }
+                self.refreshControl.endRefreshing()
             case let .failure(error):
                 print(error)
             }
         }
+    }
+    
+    @objc func refreshEventsTable() {
+        getEvents()
     }
 }
 
@@ -126,9 +145,13 @@ extension HomeTableController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: HomeEventsTableCell.identifier, for: indexPath) as! HomeEventsTableCell
         let event = events[indexPath.row]
-        cell.details = event
-        if !favoriteEvents.contains("\(event.id)") {
-            cell.favoriteButtonImageView.isHidden = true
+        DispatchQueue.global(qos: .userInteractive).async {
+            DispatchQueue.main.async {
+                cell.details = event
+                if self.favoriteEvents.contains("\(event.id)") {
+                    cell.favoriteButtonImageView.isHidden = false
+                }
+            }
         }
         return cell
     }
